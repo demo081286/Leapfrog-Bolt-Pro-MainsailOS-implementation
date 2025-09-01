@@ -1,0 +1,88 @@
+#####################################################################
+# Custom Macros for Leapfrog Bolt Pro
+#####################################################################
+
+[gcode_macro START_PRINT]
+description: Start print sequence
+gcode:
+    G28
+    G1 Z5 F3000
+    G1 X0 Y0 F6000
+
+[gcode_macro END_PRINT]
+description: End print sequence
+gcode:
+    G91
+    G1 Z10 F300
+    G90
+    G1 X0 Y300 F6000
+    M84
+
+[gcode_macro CANCEL_PRINT]
+description: Cancel print
+gcode:
+    TURN_OFF_HEATERS
+    M84
+    G91
+    G1 Z10 F300
+    G90
+    G1 X0 Y300 F6000
+
+# ============================================================
+#  Leapfrog Bolt Pro LED Control Macros
+#  These macros control the LED behavior based on printer state.
+#  States:
+#   - IDLE      = White (for maintenance/standby)
+#   - PRINTING  = White (bright workspace lighting during print)
+#   - SUCCESS   = Slow pulsing green
+#   - ERROR     = Fast pulsing red
+# ============================================================
+
+[gcode_macro LED_IDLE]
+description: "Set LEDs to white for idle state"
+gcode:
+    RUN_SHELL_COMMAND CMD=led_idle
+
+[gcode_macro LED_PRINTING]
+description: "Set LEDs to white during printing for visibility"
+gcode:
+    RUN_SHELL_COMMAND CMD=led_printing
+
+[gcode_macro LED_SUCCESS]
+description: "Set LEDs to slow green pulsing for print success"
+gcode:
+    RUN_SHELL_COMMAND CMD=led_success
+
+[gcode_macro LED_ERROR]
+description: "Set LEDs to fast red pulsing for print error"
+gcode:
+    RUN_SHELL_COMMAND CMD=led_error
+
+# ============================================================
+# Shell command definitions
+# Klipper requires [gcode_shell_command] sections for scripts.
+# Each shell command points to the Python LED control script.
+# ============================================================
+
+[gcode_shell_command led_idle]
+command: /usr/bin/python3 /home/pi/leapfrog/led_control/led_state.py idle
+timeout: 5.0
+verbose: True
+
+[gcode_shell_command led_printing]
+command: /usr/bin/python3 /home/pi/leapfrog/led_control/led_state.py printing
+timeout: 5.0
+verbose: True
+
+[gcode_shell_command led_success]
+command: /usr/bin/python3 /home/pi/leapfrog/led_control/led_state.py success
+timeout: 5.0
+verbose: True
+
+[gcode_shell_command led_error]
+command: /usr/bin/python3 /home/pi/leapfrog/led_control/led_state.py error
+timeout: 5.0
+verbose: True
+
+
+
