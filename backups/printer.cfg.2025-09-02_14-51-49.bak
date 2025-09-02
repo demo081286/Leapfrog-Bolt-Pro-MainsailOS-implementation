@@ -7,7 +7,8 @@
 # - E0 = Right Extruder (X0)
 # - E1 = Left Extruder (X1)
 #========================================================
-
+[force_move]
+enable_force_move: True
 [include mainsail.cfg]
 [include macros.cfg]
 
@@ -35,47 +36,20 @@ max_z_velocity: 5
 max_z_accel: 100
 square_corner_velocity: 5.0
 
-
 #####################################################################
-# ADC PT100 Calibration    
+# ADC PT100 Calibration
 #####################################################################
-#[adc_temperature pt100_leapfrog]
-#temperature1: 0
-#voltage1: 1.95
-#temperature2: 100
-#voltage2: 2.68
-#temperature3: 200
-#voltage3: 3.77
-#temperature4: 300
-#voltage4: 4.05
-#temperature5: 400
-#voltage5: 4.68               The original that matches the original Marlin firmware
-
-
 [adc_temperature pt100_leapfrog]
-# Derived from Leapfrog's Marlin PT100 ADC table (5V, 10-bit), converted to volts
 temperature1: 0
-voltage1: 1.955
-temperature2: 50
-voltage2: 2.322
-temperature3: 100
-voltage3: 2.683
-temperature4: 140
-voltage4: 2.967
-temperature5: 170
-voltage5: 3.177
-temperature6: 200
-voltage6: 3.382
-temperature7: 220
-voltage7: 3.519
-temperature8: 240
-voltage8: 3.651
-temperature9: 255
-voltage9: 3.749
-temperature10: 270
-voltage10: 3.851
-
-
+voltage1: 1.95
+temperature2: 100
+voltage2: 2.68
+temperature3: 200
+voltage3: 3.77
+temperature4: 300
+voltage4: 4.05
+temperature5: 400
+voltage5: 4.68
 
 #####################################################################
 # Stepper Drivers / Endstops - Dual Independent Carriages
@@ -88,14 +62,12 @@ voltage10: 3.851
 step_pin: PA6
 dir_pin: PK1
 enable_pin: !PA7
-rotation_distance: 24
+rotation_distance: 40.0
 microsteps: 16
 endstop_pin: ^PL4       # Right X endstop (X0_MAX)
-position_endstop: 339
-position_max: 339
-position_min: -37
+position_endstop: 300
+position_max: 300
 homing_speed: 50
-
 
 #------------------------------------------------------
 # Left X Carriage (E1)
@@ -115,14 +87,12 @@ axis: x
 step_pin: PJ1         # X1_STEP_PIN = D14 -> PJ1
 dir_pin:  !PJ0        # X1_DIR_PIN = D15 -> PJ0, inverted per Marlin
 enable_pin: !PG2      # X1_ENABLE_PIN = D39 -> PG2 (active-low)
-rotation_distance: 24
+rotation_distance: 40
 microsteps: 16
 endstop_pin: ^PL2     # X1_MIN = D47 -> PL2
-position_endstop: -37
-position_min: -37
-position_max: 339
+position_endstop: 0
+position_max: 300
 homing_speed: 50
-
 #------------------------------------------------------
 # Y Axis
 #------------------------------------------------------
@@ -130,27 +100,26 @@ homing_speed: 50
 step_pin: PK3
 dir_pin: !PK2
 enable_pin: !PK4
-rotation_distance: 30
+rotation_distance: 40.0
 microsteps: 16
 endstop_pin: ^PL1        # Y max endstop
-position_endstop: 322
-position_max: 322
-position_min: -33
+position_endstop: 300
+position_max: 300
 homing_speed: 50
 homing_positive_dir: true
 
 #------------------------------------------------------
 # Z Axis (no inversion needed)
 #------------------------------------------------------
-[stepper_z] #otend in th
+[stepper_z]otend in th
 step_pin: PC6
 dir_pin: PC5
 enable_pin: !PC7
-rotation_distance: 1.667
+rotation_distance: 8.0
 microsteps: 16
 endstop_pin: ^!PL0       # Z min endstop
 position_endstop: 0
-position_max: 205
+position_max: 250
 homing_speed: 5
 
 
@@ -160,12 +129,10 @@ homing_speed: 5
 [extruder]
 # ...
 #control: watermark   # <— temporarily
-max_extrude_only_distance: 100
 step_pin: PC3
 dir_pin: PC2
 enable_pin: !PC4
-rotation_distance: 16.099
-full_steps_per_rotation: 200
+rotation_distance: 7.0
 microsteps: 16
 heater_pin: PH6
 sensor_type: pt100_leapfrog
@@ -175,8 +142,8 @@ sensor_pin: PK5
 #pid_Ki: 0.687
 #pid_Kd: 188.846
 min_temp: 0
-max_temp: 270
-nozzle_diameter: 0.35
+max_temp: 400
+nozzle_diameter: 0.4
 filament_diameter: 1.75
 
 [verify_heater extruder]
@@ -189,12 +156,11 @@ heating_gain: 0.5
 # Extruder 1 (Left Head)
 #####################################################################
 [extruder1]
-max_extrude_only_distance: 100
+
 step_pin: PC0
-dir_pin: !PG1          # was PC1 (wrong)
-enable_pin: !PC1      # was !PG5 / !PC7 (wrong)
-rotation_distance: 16.099
-full_steps_per_rotation: 200
+dir_pin: PC1
+enable_pin: !PC7
+rotation_distance: 7.0
 microsteps: 16
 heater_pin: PH5
 sensor_type: pt100_leapfrog
@@ -204,10 +170,9 @@ sensor_pin: PK7
 #pid_Ki: 0.687
 #pid_Kd: 188.846
 min_temp: 0
-max_temp: 270
-nozzle_diameter: 0.35
+max_temp: 400
+nozzle_diameter: 0.4
 filament_diameter: 1.75
-
 
 [verify_heater extruder1]
 max_error: 300
@@ -235,12 +200,12 @@ max_temp: 110
 [fan]
 pin: PE3                # Part cooling fan
 
-#[heater_fan hotend_cooling_fan]
-#pin: PE4                # Hotend cooling fan
-#max_power: 1.0
-#kick_start_time: 0.5
-#heater: extruder
-#heater_temp: 50.0
+[heater_fan hotend_cooling_fan]
+pin: PE4                # Hotend cooling fan
+max_power: 1.0
+kick_start_time: 0.5
+heater: extruder
+heater_temp: 50.0
 
 #####################################################################
 # Idle and Safety
@@ -296,15 +261,15 @@ verbose: True
 #*#
 #*# [extruder1]
 #*# control = pid
-#*# pid_kp = 36.287
-#*# pid_ki = 1.551
-#*# pid_kd = 212.280
+#*# pid_kp = 37.992
+#*# pid_ki = 2.076
+#*# pid_kd = 173.811
 #*#
 #*# [extruder]
 #*# control = pid
-#*# pid_kp = 33.767
-#*# pid_ki = 1.301
-#*# pid_kd = 219.064
+#*# pid_kp = 26.465
+#*# pid_ki = 0.848
+#*# pid_kd = 206.424
 #*#
 #*# [heater_bed]
 #*# control = pid

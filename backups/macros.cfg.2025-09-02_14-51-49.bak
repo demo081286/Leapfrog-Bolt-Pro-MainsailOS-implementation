@@ -1,54 +1,6 @@
 #####################################################################
 # Custom Macros for Leapfrog Bolt Pro
 #####################################################################
-[gcode_macro T0]
-description: Switch to extruder 0
-gcode:
-    ACTIVATE_EXTRUDER EXTRUDER=extruder
-    SET_GCODE_OFFSET X=0 Y=0 Z=0
-
-[gcode_macro T1]
-description: Switch to extruder 1
-gcode:
-    ACTIVATE_EXTRUDER EXTRUDER=extruder1
-    SET_GCODE_OFFSET X=0 Y=0 Z=0
-
-
-[gcode_macro MOVE_TO_PURGE]
-description: Move both extruders fully to the front for purging
-gcode:
-    SAVE_GCODE_STATE NAME=purge_state
-    G91                       ; relative positioning
-    G1 Z10 F600               ; lift Z by 10mm for clearance
-    G90                       ; absolute positioning
-    G1 Y-32 F6000               ; move fully forward (1mm from Y=0 for safety)
-    G1 X335 F6000              ; move both heads ~5mm toward the bed (adjust if needed)
-    #G1  F600                ; lower close to bed
-    RESTORE_GCODE_STATE NAME=purge_state
-
-[gcode_macro LOAD_FILAMENT]
-description: Load filament into the active extruder
-gcode:
-    {% set load_length = params.LENGTH|default(120)|int %}
-    M117 Loading filament...
-    G91                       ; relative mode
-    G1 E{load_length} F300    ; slowly load filament (default 120mm)
-    G90                       ; absolute mode
-    M117 Filament loaded
-
-
-[gcode_macro UNLOAD_FILAMENT]
-description: Unload filament from the active extruder
-gcode:
-    {% set unload_length = params.LENGTH|default(120)|int %}
-    M117 Unloading filament...
-    G91                       ; relative mode
-    G1 E-5 F300               ; initial quick pullback
-    G1 E-{unload_length} F600 ; retract full length (default 120mm)
-    G90                       ; absolute mode
-    M117 Filament unloaded
-
-
 
 [gcode_macro START_PRINT]
 description: Start print sequence
