@@ -18,7 +18,6 @@ gcode:
 description: Move both extruders fully to the front for purging
 gcode:
     SAVE_GCODE_STATE NAME=purge_state
-    G28 X0 Y0 Z0
     G91                       ; relative positioning
     G1 Z10 F600               ; lift Z by 10mm for clearance
     G90                       ; absolute positioning

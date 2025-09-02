@@ -164,7 +164,7 @@ max_extrude_only_distance: 100
 step_pin: PC3
 dir_pin: PC2
 enable_pin: !PC4
-rotation_distance: 16.743
+rotation_distance: 16.099
 full_steps_per_rotation: 200
 microsteps: 16
 heater_pin: PH6
